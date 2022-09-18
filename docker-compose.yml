@@ -1,0 +1,39 @@
+version: "3.0"
+services:
+
+    mysql:        
+          image: mysql       
+          ports: 
+            - "3310:3306"        
+          restart: on-failure        
+          environment: 
+            - MYSQL_ROOT_PASSWORD=030815        
+          networks: 
+            - my-server
+    server:        
+          container_name: server        
+          build:            
+            context: ./server            
+            dockerfile: Dockerfile        
+          ports: 
+            - "3311:3310"        
+          restart: on-failure        
+          networks: 
+            - my-server        
+          depends_on: 
+            - mysql
+    client:        
+          container_name: client        
+          build:            
+            context: ./client            
+            dockerfile: Dockerfile        
+          ports: 
+            - "81:8080"        
+          restart: on-failure        
+          networks: 
+            - my-server        
+          depends_on: 
+            - mysql
+            - server
+networks:
+    my-server:
